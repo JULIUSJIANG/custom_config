@@ -75,7 +75,7 @@ class DomTypeObject extends ReactComponentExtend {
                 [MgrDomDefine.STYLE_COLOR]: MgrDomDefine.STYLE_COLOR_WHITE,
                 [MgrDomDefine.STYLE_FONT_SIZE]: MgrDomDefine.STYLE_FONT_SIZE_14,
             }
-        }, `描述`), ReactComponentExtend.instantiateComponent(DomTextInput, {
+        }, `备注`), ReactComponentExtend.instantiateComponent(DomTextInput, {
             value: custormStruct.info,
             onChange: (val) => {
                 custormStruct.info = val;
@@ -103,7 +103,7 @@ class DomTypeObject extends ReactComponentExtend {
                 struct.propertyAdd({
                     id: id,
                     demoName: `Property${id}`,
-                    info: `描述`,
+                    info: `备注`,
                     isArray: false,
                     type: StructPropertyTypeBasic.typeNumber.getId()
                 });

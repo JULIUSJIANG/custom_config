@@ -1,7 +1,5 @@
 import objectPool from "../common/ObjectPool.js";
 import ReactComponentExtend from "../common/ReactComponentExtend.js";
-import DomTypeEditBasic from "../ui/DomTypeEditBasic.js";
-import DomTypeMoveBasic from "../ui/DomTypeMoveBasic.js";
 import DomTypeReadBasic from "../ui/DomTypeReadBasic.js";
 import StructPropertyType from "./StructPropertyType.js";
 /**
@@ -24,19 +22,18 @@ class StructPropertyTypeBasic extends StructPropertyType {
         return this.info;
     }
     renderRead(idx) {
-        let args = objectPool.pop(DomTypeEditBasic.Args.poolType);
+        let args = objectPool.pop(DomTypeReadBasic.Args.poolType);
         args.init(idx, this);
         return ReactComponentExtend.instantiateComponent(DomTypeReadBasic, args);
     }
-    renderMove(idx) {
-        let args = objectPool.pop(DomTypeEditBasic.Args.poolType);
-        args.init(idx, this);
-        return ReactComponentExtend.instantiateComponent(DomTypeMoveBasic, args);
-    }
     renderEdit(idx) {
-        let args = objectPool.pop(DomTypeEditBasic.Args.poolType);
-        args.init(idx, this);
-        return ReactComponentExtend.instantiateComponent(DomTypeEditBasic, args);
+        return null;
+    }
+    renderMoveProperty(idx) {
+        return null;
+    }
+    renderMoveStruct(idx) {
+        return null;
     }
 }
 (function (StructPropertyTypeBasic) {

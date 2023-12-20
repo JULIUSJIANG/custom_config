@@ -1,3 +1,4 @@
+import CacheInst from "./app/CacheInst.js";
 import CacheStruct from "./app/CacheStruct.js";
 import DragPropertyMachine from "./app/DragPropertyMachine.js";
 import DragStructMachine from "./app/DragStructMachine.js";
@@ -5,6 +6,7 @@ import LeftOpMachine from "./app/LeftOpMachine.js";
 import StructPropertyType from "./app/StructPropertyType.js";
 import StructPropertyTypeBasic from "./app/StructPropertyTypeBasic.js";
 import StructPropertyTypeObject from "./app/StructPropertyTypeObject.js";
+import StructPropertyTypeRoot from "./app/StructPropertyTypeRoot.js";
 import ObjectPoolType from "./common/ObjectPoolType.js";
 import ReactComponentExtendInstance from "./common/ReactComponentExtendInstance.js";
 import MgrFile from "./mgr/MgrFile.js";
@@ -12,6 +14,21 @@ import MgrFileItem from "./mgr/MgrFileItem.js";
 import MgrSdk from "./mgr/MgrSdk.js";
 
 class IndexGlobal {
+
+    /**
+     * 根类型
+     */
+    typeRoot: StructPropertyTypeRoot;
+
+    /**
+     * 根缓存
+     */
+    instRoot: CacheInst;
+
+    /**
+     * 标识到具体类型的映射
+     */
+    mapTypeAll = new Map <number, StructPropertyType> ();
 
     /**
      * 左侧栏状态机
@@ -45,30 +62,44 @@ class IndexGlobal {
 
         this.dragMachineStruct = new DragStructMachine ();
         this.dragMachineProperty = new DragPropertyMachine ();
+
+        // 补全静态的类型记录
+        this.typeRoot = new StructPropertyTypeRoot (new CacheStruct (MgrFile.inst.get (MgrFileItem.ROOT_STRUCT)));
+        this.mapTypeAll.set (this.typeRoot.getId (), this.typeRoot);
+        for (let i = 0; i < StructPropertyTypeBasic.listType.length; i++) {
+            let listTypeI = StructPropertyTypeBasic.listType [i];
+            this.mapTypeAll.set (listTypeI.id, listTypeI);
+        };
+
+        // 全局的配置实例
+        this.instRoot = new CacheInst (MgrFile.inst.get (MgrFileItem.CONFIG_ROOT));
     }
 
     /**
-     * 结构集合
+     * 用户所有自定义的类型
      */
-    structList = new Array <CacheStruct> ();
+    listTypeObjectCustom = new Array <StructPropertyTypeObject> ();
 
     /**
      * 结构映射
      */
-    structMap = new Map <number, CacheStruct> ();
+    mapTypeObjectCustom = new Map <number, StructPropertyTypeObject> ();
 
     /**
      * 增
      * @param dataStruct 
      */
     structAdd (dataStruct: MgrFileItem.CustomStruct) {
-        let cache = new CacheStruct (dataStruct);
-        this.structMap.set (cache.dataStruct.id, cache);
-        this.structList.push (cache);
+        let typeObject = new StructPropertyTypeObject (new CacheStruct (dataStruct));
+        for (let i = 0; i < this.listTypeObjectCustom.length; i++) {
+            let listTypeObjectCustomI = this.listTypeObjectCustom [i];
+            listTypeObjectCustomI.onTypeObjectAdd (typeObject);
+        };
+        this.listTypeObjectCustom.push (typeObject);
+        this.mapTypeObjectCustom.set (typeObject.struct.dataStruct.id, typeObject);
+        this.mapTypeAll.set (typeObject.struct.dataStruct.id, typeObject);
         MgrFile.inst.get (MgrFileItem.LIST_CUSTOM_STRUCT).push (dataStruct);
-        let type = new StructPropertyTypeObject ();
-        type.init (cache);
-        this.listTypeObject.push (type);
+        typeObject.index = this.listTypeObjectCustom.length - 1;
     }
 
     /**
@@ -78,9 +109,9 @@ class IndexGlobal {
      */
     structDel (dataStruct: MgrFileItem.CustomStruct) {
         let index: number;
-        for (let i = 0; i < this.structList.length; i++) {
-            let structListI = this.structList [i];
-            if (structListI.dataStruct.id == dataStruct.id) {
+        for (let i = 0; i < this.listTypeObjectCustom.length; i++) {
+            let listTypeObjectCustomI = this.listTypeObjectCustom [i];
+            if (listTypeObjectCustomI.struct.dataStruct.id == dataStruct.id) {
                 index = i;
                 break;
             };
@@ -88,11 +119,20 @@ class IndexGlobal {
         if (index == null) {
             return;
         };
-        let cache = this.structList [index];
-        this.structMap.delete (cache.dataStruct.id);
-        this.structList.splice (index, 1);
+        let typeObject = this.listTypeObjectCustom [index];
+        for (let i = 0; i < this.listTypeObjectCustom.length; i++) {
+            let listTypeObjectCustomI = this.listTypeObjectCustom [i];
+            listTypeObjectCustomI.onTypeObjectDel (typeObject);
+        };
+        this.listTypeObjectCustom.splice (index, 1);
+        this.mapTypeObjectCustom.delete (typeObject.struct.dataStruct.id);
+        this.mapTypeAll.delete (typeObject.struct.dataStruct.id);
         MgrFile.inst.get (MgrFileItem.LIST_CUSTOM_STRUCT).splice (index, 1);
-        this.listTypeObject.splice (index, 1);
+
+        for (let i = index; i < this.listTypeObjectCustom.length; i++) {
+            let listTypeObjectCustomI = this.listTypeObjectCustom [i];
+            listTypeObjectCustomI.index = i;
+        };
     }
 
     /**
@@ -101,48 +141,78 @@ class IndexGlobal {
      * @param idxTo 
      */
     structMove (idxFrom: number, idxTo: number) {
-        let cacheFrom = this.structList [idxFrom];
-        this.structList.splice (idxFrom, 1);
-        this.structList.splice (idxTo, 0, cacheFrom);
+        let typeFrom = this.listTypeObjectCustom [idxFrom];
+        this.listTypeObjectCustom.splice (idxFrom, 1);
+        this.listTypeObjectCustom.splice (idxTo, 0, typeFrom);
 
         let srcFrom = MgrFile.inst.get (MgrFileItem.LIST_CUSTOM_STRUCT) [idxFrom];
         MgrFile.inst.get (MgrFileItem.LIST_CUSTOM_STRUCT).splice (idxFrom, 1);
         MgrFile.inst.get (MgrFileItem.LIST_CUSTOM_STRUCT).splice (idxTo, 0, srcFrom);
 
-        let typeFrom = this.listTypeObject [idxFrom];
-        this.listTypeObject.splice (idxFrom, 1);
-        this.listTypeObject.splice (idxTo, 0, typeFrom);
+        let idxStart = Math.min (idxFrom, idxTo);
+        let idxEnd = Math.max (idxFrom, idxTo);
+        for (let i = idxStart; i <= idxEnd; i++) {
+            this.listTypeObjectCustom [i].index = i;
+        };
+        for (let i = 0; i < this.listTypeObjectCustom.length; i++) {
+            let listTypeObjectCustomI = this.listTypeObjectCustom [i];
+            listTypeObjectCustomI.onIndexModify ();
+        };
     }
 
+    /**
+     * 可选类型
+     */
+    listTypeSelectAble = new Array <StructPropertyType> ();
 
     /**
-     * 当前所有类型的集合
+     * 可继承类型
      */
-    listType = new Array <StructPropertyType> ();
+    listTypeExtendAble = new Array <StructPropertyTypeObject> ();
 
     /**
-     * 对象类型的集合
+     * 总览列表
      */
-    listTypeObject = new Array <StructPropertyTypeObject> ();
-
+    listTypeRead = new Array <StructPropertyType> ();
     /**
-     * 标识到具体类型的映射
+     * 编辑列表
      */
-    mapType = new Map <number, StructPropertyType> ();
+    listTypeEdit = new Array <StructPropertyType> ();
+    /**
+     * 属性迁移列表
+     */
+    listTypeMoveProperty = new Array <StructPropertyType> ();
+    /**
+     * 结构迁移列表
+     */
+    listTypeMoveStruct = new Array <StructPropertyType> ();
 
     /**
      * 事件派发 - 刷新
      */
     onRender () {
-        this.listType.length = 0;
-        this.listType.push (...StructPropertyTypeBasic.listType);
-        this.listType.push (...this.listTypeObject);
+        this.listTypeSelectAble.length = 0;
+        this.listTypeSelectAble.push (...StructPropertyTypeBasic.listType);
+        this.listTypeSelectAble.push (...this.listTypeObjectCustom);
 
-        this.mapType.clear ();
-        for (let i = 0; i < this.listType.length; i++) {
-            let listTypeI = this.listType [i];
-            this.mapType.set (listTypeI.getId (), listTypeI);
-        };
+        this.listTypeExtendAble.length = 0;
+        this.listTypeExtendAble.push (...this.listTypeObjectCustom);
+
+        this.listTypeRead.length = 0;
+        this.listTypeRead.push (...StructPropertyTypeBasic.listType);
+        this.listTypeRead.push (this.typeRoot);
+        this.listTypeRead.push (...this.listTypeObjectCustom);
+
+        this.listTypeEdit.length = 0;
+        this.listTypeEdit.push (this.typeRoot);
+        this.listTypeEdit.push (...this.listTypeObjectCustom);
+
+        this.listTypeMoveProperty.length = 0;
+        this.listTypeMoveProperty.push (this.typeRoot);
+        this.listTypeMoveProperty.push (...this.listTypeObjectCustom);
+
+        this.listTypeMoveStruct.length = 0;
+        this.listTypeMoveStruct.push (...this.listTypeObjectCustom);
     }
 }
 
@@ -162,7 +232,7 @@ namespace IndexGlobal {
         value: number;
 
         /**
-         * 描述
+         * 备注
          */
         label: ReactComponentExtendInstance;
 

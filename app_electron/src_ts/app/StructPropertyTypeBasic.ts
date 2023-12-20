@@ -1,8 +1,6 @@
 import objectPool from "../common/ObjectPool.js";
 import ReactComponentExtend from "../common/ReactComponentExtend.js";
 import ReactComponentExtendInstance from "../common/ReactComponentExtendInstance.js";
-import DomTypeEditBasic from "../ui/DomTypeEditBasic.js";
-import DomTypeMoveBasic from "../ui/DomTypeMoveBasic.js";
 import DomTypeReadBasic from "../ui/DomTypeReadBasic.js";
 import StructPropertyType from "./StructPropertyType.js";
 
@@ -19,7 +17,7 @@ class StructPropertyTypeBasic extends StructPropertyType {
      */
     demoName: string;
     /**
-     * 描述
+     * 备注
      */
     info: string;
 
@@ -47,9 +45,8 @@ class StructPropertyTypeBasic extends StructPropertyType {
         return this.info;
     }
 
-
     renderRead (idx: number): ReactComponentExtendInstance {
-        let args = objectPool.pop (DomTypeEditBasic.Args.poolType);
+        let args = objectPool.pop (DomTypeReadBasic.Args.poolType);
         args.init (idx, this);
         return ReactComponentExtend.instantiateComponent (
             DomTypeReadBasic,
@@ -57,22 +54,20 @@ class StructPropertyTypeBasic extends StructPropertyType {
         );
     }
 
-    renderMove (idx: number): ReactComponentExtendInstance {
-        let args = objectPool.pop (DomTypeEditBasic.Args.poolType);
-        args.init (idx, this);
-        return ReactComponentExtend.instantiateComponent (
-            DomTypeMoveBasic,
-            args
-        );
+    renderEdit (idx: number): ReactComponentExtendInstance {
+        return null;
     }
 
-    renderEdit (idx: number): ReactComponentExtendInstance {
-        let args = objectPool.pop (DomTypeEditBasic.Args.poolType);
-        args.init (idx, this);
-        return ReactComponentExtend.instantiateComponent (
-            DomTypeEditBasic,
-            args
-        );
+    renderMoveProperty (idx: number): ReactComponentExtendInstance {
+        return null;
+    }
+
+    renderMoveStruct (idx: number): ReactComponentExtendInstance {
+        return null;
+    }
+
+    impCache (data: any) {
+        return data;
     }
 }
 

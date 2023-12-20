@@ -134,7 +134,7 @@ namespace MgrDomDefine {
     /**
      * 分块的背景颜色
      */
-    export const CONFIG_TXT_BG_COLOR = "#00000088";
+    export const CONFIG_TXT_BG_COLOR = "#888888FF";
 
     /**
      * 事件名 - 拖拽 - 开始

@@ -2,7 +2,7 @@ import IndexGlobal from "../IndexGlobal.js";
 import ObjectPoolType from "../common/ObjectPoolType.js";
 import ReactComponentExtend from "../common/ReactComponentExtend.js";
 import MgrDomDefine from "../mgr/MgrDomDefine.js";
-class DomTypeReadObjectProperty extends ReactComponentExtend {
+class DomTypeReadObjectPropertyReduce extends ReactComponentExtend {
     render() {
         let struct = this.props.struct;
         let property = this.props.property.maskCurrStatus.onGetData();
@@ -19,7 +19,7 @@ class DomTypeReadObjectProperty extends ReactComponentExtend {
         }, `${property.dataProperty.demoName} / ${type.getDemoName()} / ${property.dataProperty.info}`);
     }
 }
-(function (DomTypeReadObjectProperty) {
+(function (DomTypeReadObjectPropertyReduce) {
     class Args {
         init(struct, property) {
             this.struct = struct;
@@ -31,6 +31,6 @@ class DomTypeReadObjectProperty extends ReactComponentExtend {
         onPop: null,
         onPush: null
     });
-    DomTypeReadObjectProperty.Args = Args;
-})(DomTypeReadObjectProperty || (DomTypeReadObjectProperty = {}));
-export default DomTypeReadObjectProperty;
+    DomTypeReadObjectPropertyReduce.Args = Args;
+})(DomTypeReadObjectPropertyReduce || (DomTypeReadObjectPropertyReduce = {}));
+export default DomTypeReadObjectPropertyReduce;

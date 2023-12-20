@@ -7,7 +7,7 @@ import ReactComponentExtend from "../common/ReactComponentExtend.js";
 import ReactComponentExtendInstance from "../common/ReactComponentExtendInstance.js";
 import MgrDomDefine from "../mgr/MgrDomDefine.js";
 
-class DomTypeReadObjectProperty extends ReactComponentExtend <DomTypeReadObjectProperty.Args> {
+class DomTypeReadObjectPropertyReduce extends ReactComponentExtend <DomTypeReadObjectPropertyReduce.Args> {
 
     render (): ReactComponentExtendInstance {
         let struct = this.props.struct;
@@ -33,7 +33,7 @@ class DomTypeReadObjectProperty extends ReactComponentExtend <DomTypeReadObjectP
     }
 }
 
-namespace DomTypeReadObjectProperty {
+namespace DomTypeReadObjectPropertyReduce {
 
     export class Args {
 
@@ -54,4 +54,4 @@ namespace DomTypeReadObjectProperty {
     }
 }
 
-export default DomTypeReadObjectProperty;
+export default DomTypeReadObjectPropertyReduce;

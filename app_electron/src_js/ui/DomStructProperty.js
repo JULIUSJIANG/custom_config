@@ -62,7 +62,7 @@ class DomStructProperty extends ReactComponentExtend {
                 [MgrDomDefine.STYLE_COLOR]: MgrDomDefine.STYLE_COLOR_BLACK,
                 [MgrDomDefine.STYLE_FONT_SIZE]: MgrDomDefine.STYLE_FONT_SIZE_14,
             }
-        }, `描述`), ReactComponentExtend.instantiateComponent(DomTextInput, {
+        }, `备注`), ReactComponentExtend.instantiateComponent(DomTextInput, {
             value: customProperty.info,
             onChange: (val) => {
                 customProperty.info = val;

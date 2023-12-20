@@ -7,7 +7,55 @@ import ReactComponentExtend from "../common/ReactComponentExtend.js";
 import ReactComponentExtendInstance from "../common/ReactComponentExtendInstance.js";
 import MgrDomDefine from "../mgr/MgrDomDefine.js";
 
-class DomTypeReadObjectProperty extends ReactComponentExtend <DomTypeReadObjectProperty.Args> {
+class DomTypeMovePObjectProperty extends ReactComponentExtend <DomTypeMovePObjectProperty.Args> {
+
+    ref = NodeModules.react.createRef ();
+
+    reactComponentExtendOnInit (): void {
+        let tag = this.ref.current as HTMLDivElement;
+        tag.addEventListener (
+            MgrDomDefine.EVT_NAME_DRAG_START, 
+            (event) => {
+                IndexGlobal.inst.dragMachineProperty.currStatus.onStart (this.relProperty);
+            }
+        );
+        tag.addEventListener (
+            MgrDomDefine.EVT_NAME_DRAG_ING, 
+            (event) => {
+            }
+        );
+        tag.addEventListener (
+            MgrDomDefine.EVT_NAME_DRAG_END, 
+            (event) => {
+                IndexGlobal.inst.dragMachineProperty.currStatus.onEnd ();
+            }
+        );
+        
+        tag.addEventListener (
+            MgrDomDefine.EVT_NAME_DRAG_ENTER, 
+            (event) => {
+                IndexGlobal.inst.dragMachineProperty.currStatus.onTargetEnter (this.relProperty);
+            }
+        );
+        tag.addEventListener (
+            MgrDomDefine.EVT_NAME_DRAG_OVER, 
+            (event) => {
+                event.preventDefault();
+            }
+        );
+        tag.addEventListener (
+            MgrDomDefine.EVT_NAME_DRAG_LEAVE, 
+            (event) => {
+                IndexGlobal.inst.dragMachineProperty.currStatus.onTargetLeave ();
+            }
+        );
+    }
+
+    relProperty: CacheStructProperty;
+
+    reactComponentExtendOnDraw (): void {
+        this.relProperty = this.props.property;
+    }
 
     render (): ReactComponentExtendInstance {
         let struct = this.props.struct;
@@ -26,6 +74,8 @@ class DomTypeReadObjectProperty extends ReactComponentExtend <DomTypeReadObjectP
 
                     [MgrDomDefine.STYLE_COLOR]: MgrDomDefine.STYLE_COLOR_BLACK,
                 },
+                ref: this.ref,
+                draggable: "true"
             },
 
             `${property.dataProperty.demoName} / ${type.getDemoName ()} / ${property.dataProperty.info}`
@@ -33,7 +83,7 @@ class DomTypeReadObjectProperty extends ReactComponentExtend <DomTypeReadObjectP
     }
 }
 
-namespace DomTypeReadObjectProperty {
+namespace DomTypeMovePObjectProperty {
 
     export class Args {
 
@@ -54,4 +104,4 @@ namespace DomTypeReadObjectProperty {
     }
 }
 
-export default DomTypeReadObjectProperty;
+export default DomTypeMovePObjectProperty;

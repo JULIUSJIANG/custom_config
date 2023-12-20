@@ -22,23 +22,30 @@ export default class DomRoot extends ReactComponentExtend <number> {
         this.listChildrenStruct.length = 0;
         switch (IndexGlobal.inst.leftOpMachine.currStatus) {
             case IndexGlobal.inst.leftOpMachine.statusRead: {
-                for (let i = 0; i < IndexGlobal.inst.listType.length; i++) {
-                    let listStructI = IndexGlobal.inst.listType [i];
+                for (let i = 0; i < IndexGlobal.inst.listTypeRead.length; i++) {
+                    let listStructI = IndexGlobal.inst.listTypeRead [i];
                     this.listChildrenStruct.push (listStructI.renderRead (i));
                 };
                 break;
             };
-            case IndexGlobal.inst.leftOpMachine.statusMove: {
-                for (let i = 0; i < IndexGlobal.inst.listTypeObject.length; i++) {
-                    let listStructI = IndexGlobal.inst.listTypeObject [i];
-                    this.listChildrenStruct.push (listStructI.renderMove (i));
+            case IndexGlobal.inst.leftOpMachine.statusEdit: {
+                for (let i = 0; i < IndexGlobal.inst.listTypeEdit.length; i++) {
+                    let listStructI = IndexGlobal.inst.listTypeEdit [i];
+                    this.listChildrenStruct.push (listStructI.renderEdit (i));
                 };
                 break;
             };
-            case IndexGlobal.inst.leftOpMachine.statusEdit: {
-                for (let i = 0; i < IndexGlobal.inst.listTypeObject.length; i++) {
-                    let listStructI = IndexGlobal.inst.listTypeObject [i];
-                    this.listChildrenStruct.push (listStructI.renderEdit (i));
+            case IndexGlobal.inst.leftOpMachine.statusMoveProperty: {
+                for (let i = 0; i < IndexGlobal.inst.listTypeMoveProperty.length; i++) {
+                    let listStructI = IndexGlobal.inst.listTypeMoveProperty [i];
+                    this.listChildrenStruct.push (listStructI.renderMoveProperty (i));
+                };
+                break;
+            };
+            case IndexGlobal.inst.leftOpMachine.statusMoveStruct: {
+                for (let i = 0; i < IndexGlobal.inst.listTypeMoveStruct.length; i++) {
+                    let listStructI = IndexGlobal.inst.listTypeMoveStruct [i];
+                    this.listChildrenStruct.push (listStructI.renderMoveStruct (i));
                 };
                 break;
             };
@@ -158,6 +165,9 @@ export default class DomRoot extends ReactComponentExtend <number> {
                             [MgrDomDefine.STYLE_FLEX_GROW]: 1,
                             [MgrDomDefine.STYLE_DISPLAY]: MgrDomDefine.STYLE_DISPLAY_FLEX,
                             [MgrDomDefine.STYLE_FLEX_DIRECTION]: MgrDomDefine.STYLE_FLEX_DIRECTION_ROW,
+
+                            [MgrDomDefine.STYLE_FONT_SIZE]: MgrDomDefine.STYLE_FONT_SIZE_14,
+                            [MgrDomDefine.STYLE_COLOR]: MgrDomDefine.STYLE_COLOR_WHITE,
                         }
                     },
 
@@ -233,12 +243,7 @@ export default class DomRoot extends ReactComponentExtend <number> {
                                     let idSeed = MgrFile.inst.get (MgrFileItem.ID_SEED);
                                     let id = ++idSeed;
                                     MgrFile.inst.set (MgrFileItem.ID_SEED, idSeed);
-                                    IndexGlobal.inst.structAdd ({
-                                        id: id,
-                                        demoName: `CustomStruct${id}`,
-                                        info: `描述`,
-                                        listProperty: []
-                                    });
+                                    IndexGlobal.inst.structAdd (MgrFileItem.CustomStruct.create (id));
                                     IndexGlobal.inst.leftOpMachine.enter (IndexGlobal.inst.leftOpMachine.statusEdit);
                                     MgrDom.inst.callDataChange ();
                                 },
@@ -247,7 +252,7 @@ export default class DomRoot extends ReactComponentExtend <number> {
                                 }
                             },
                 
-                            `添加空类型`
+                            `添加自定义类型`
                         ),
 
                         ReactComponentExtend.instantiateTag (
@@ -270,12 +275,42 @@ export default class DomRoot extends ReactComponentExtend <number> {
                         MgrDomDefine.TAG_DIV,
                         {
                             style: {
+                                [MgrDomDefine.STYLE_WIDTH]: 0,
                                 [MgrDomDefine.STYLE_FLEX_GROW]: 1,
 
                                 [MgrDomDefine.STYLE_DISPLAY]: MgrDomDefine.STYLE_DISPLAY_FLEX,
                                 [MgrDomDefine.STYLE_FLEX_DIRECTION]: MgrDomDefine.STYLE_FLEX_DIRECTION_COLUMN,
                             }
-                        }
+                        },
+
+                        // 滚动视图的遮罩
+                        ReactComponentExtend.instantiateTag (
+                            MgrDomDefine.TAG_DIV,
+                            {
+                                style: {
+                                    [MgrDomDefine.STYLE_HEIGHT]: 0,
+                                    [MgrDomDefine.STYLE_FLEX_GROW]: 1,
+                                    [MgrDomDefine.STYLE_MARGIN]: MgrDomDefine.CONFIG_TXT_HALF_SPACING,
+            
+                                    [MgrDomDefine.STYLE_OVERFLOW_X]: MgrDomDefine.STYLE_OVERFLOW_X_SCROLL,
+                                    [MgrDomDefine.STYLE_OVERFLOW_Y]: MgrDomDefine.STYLE_OVERFLOW_Y_SCROLL
+                                }
+                            },
+            
+                            // 滚动的列表
+                            ReactComponentExtend.instantiateTag (
+                                MgrDomDefine.TAG_DIV,
+                                {
+                                    style: {
+                                        [MgrDomDefine.STYLE_DISPLAY]: MgrDomDefine.STYLE_DISPLAY_FLEX,
+                                        [MgrDomDefine.STYLE_FLEX_DIRECTION]: MgrDomDefine.STYLE_FLEX_DIRECTION_COLUMN,
+            
+                                        [MgrDomDefine.STYLE_MARGIN_RIGHT]: MgrDomDefine.CONFIG_TXT_SPACING
+                                    }
+                                },
+
+                            )
+                        )
                     )
                 )
             )

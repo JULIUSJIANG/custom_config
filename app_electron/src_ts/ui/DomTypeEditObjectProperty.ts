@@ -17,8 +17,8 @@ class DomTypeEditObjectProperty extends ReactComponentExtend <DomTypeEditObjectP
         let struct = this.props.struct;
         let property = this.props.property;
         this.listChildren.length = 0;
-        for (let i = 0; i < IndexGlobal.inst.listType.length; i++) {
-            let listTypeI = IndexGlobal.inst.listType [i];
+        for (let i = 0; i < IndexGlobal.inst.listTypeSelectAble.length; i++) {
+            let listTypeI = IndexGlobal.inst.listTypeSelectAble [i];
             this.listChildren.push (ReactComponentExtend.instantiateTag (
                 NodeModules.antd.Select.Option,
                 {
@@ -29,7 +29,7 @@ class DomTypeEditObjectProperty extends ReactComponentExtend <DomTypeEditObjectP
                     }
                 },
 
-                listTypeI.getDemoName()
+                listTypeI.getDemoName ()
             ));
         };
 
@@ -77,7 +77,6 @@ class DomTypeEditObjectProperty extends ReactComponentExtend <DomTypeEditObjectP
                         style: {
                             [MgrDomDefine.STYLE_MARGIN]: MgrDomDefine.CONFIG_TXT_HALF_SPACING,
                             [MgrDomDefine.STYLE_COLOR]: MgrDomDefine.STYLE_COLOR_BLACK,
-                            [MgrDomDefine.STYLE_FONT_SIZE]: MgrDomDefine.STYLE_FONT_SIZE_14,
                         }
                     },
 
@@ -115,11 +114,10 @@ class DomTypeEditObjectProperty extends ReactComponentExtend <DomTypeEditObjectP
                         style: {
                             [MgrDomDefine.STYLE_MARGIN]: MgrDomDefine.CONFIG_TXT_HALF_SPACING,
                             [MgrDomDefine.STYLE_COLOR]: MgrDomDefine.STYLE_COLOR_BLACK,
-                            [MgrDomDefine.STYLE_FONT_SIZE]: MgrDomDefine.STYLE_FONT_SIZE_14,
                         }
                     },
 
-                    `描述`
+                    `备注`
                 ),
 
                 ReactComponentExtend.instantiateComponent (
@@ -154,7 +152,6 @@ class DomTypeEditObjectProperty extends ReactComponentExtend <DomTypeEditObjectP
                         style: {
                             [MgrDomDefine.STYLE_MARGIN]: MgrDomDefine.CONFIG_TXT_HALF_SPACING,
                             [MgrDomDefine.STYLE_COLOR]: MgrDomDefine.STYLE_COLOR_BLACK,
-                            [MgrDomDefine.STYLE_FONT_SIZE]: MgrDomDefine.STYLE_FONT_SIZE_14,
                         }
                     },
 

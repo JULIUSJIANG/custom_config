@@ -11,24 +11,64 @@ import MgrFileItem from "../mgr/MgrFileItem.js";
 import DomTypeEditObjectProperty from "./DomTypeEditObjectProperty.js";
 import DomTextInput from "./DomTextInput.js";
 import StructPropertyTypeObject from "../app/StructPropertyTypeObject.js";
-import StructPropertyTypeBasic from "../app/StructPropertyTypeBasic.js";
+
+let setChildren = new Set <StructPropertyTypeObject> ();
 
 /**
  * 类型
  */
 class DomTypeEditObject extends ReactComponentExtend <DomTypeEditObject.Args> {
 
-    listChildren = new Array <ReactComponentExtendInstance> ();
+    listChildrenExtend = new Array <ReactComponentExtendInstance> ();
+
+    listChildrenProperty = new Array <ReactComponentExtendInstance> ();
 
     render (): ReactComponentExtendInstance {
-        let struct = this.props.data.struct;
-        let custormStruct = this.props.data.struct.dataStruct;
-        this.listChildren.length = 0;
+        let data = this.props.data;
+        let struct = data.struct;
+
+        setChildren.clear ();
+        data.getAllChildren (setChildren);
+
+        this.listChildrenExtend.length = 0;
+        this.listChildrenExtend.push (ReactComponentExtend.instantiateTag (
+            NodeModules.antd.Select.Option,
+            {
+                key: 0,
+                value: 0,
+                style: {
+
+                }
+            },
+
+            `无`,
+        ));
+        for (let i = 0; i < IndexGlobal.inst.listTypeExtendAble.length; i++) {
+            let listTypeExtendAbleI = IndexGlobal.inst.listTypeExtendAble [i];
+            if (setChildren.has (listTypeExtendAbleI)) {
+                continue;
+            };
+            this.listChildrenExtend.push (ReactComponentExtend.instantiateTag (
+                NodeModules.antd.Select.Option,
+                {
+                    key: listTypeExtendAbleI.getId (),
+                    value: listTypeExtendAbleI.getId (),
+                    style: {
+
+                    }
+                },
+
+                listTypeExtendAbleI.getDemoName ()
+            ));
+        };
+
+        let custormStruct = struct.dataStruct;
+        this.listChildrenProperty.length = 0;
         for (let i = 0; i < struct.propertyList.length; i++) {
             let propertyListI = struct.propertyList [i];
             let args = objectPool.pop (DomTypeEditObjectProperty.Args.poolType);
             args.init (struct, propertyListI);
-            this.listChildren.push (
+            this.listChildrenProperty.push (
                 ReactComponentExtend.instantiateComponent (
                     DomTypeEditObjectProperty,
                     args
@@ -69,8 +109,6 @@ class DomTypeEditObject extends ReactComponentExtend <DomTypeEditObject.Args> {
                     {
                         style: {
                             [MgrDomDefine.STYLE_MARGIN]: MgrDomDefine.CONFIG_TXT_HALF_SPACING,
-                            [MgrDomDefine.STYLE_COLOR]: MgrDomDefine.STYLE_COLOR_WHITE,
-                            [MgrDomDefine.STYLE_FONT_SIZE]: MgrDomDefine.STYLE_FONT_SIZE_14,
                         }
                     },
 
@@ -108,12 +146,63 @@ class DomTypeEditObject extends ReactComponentExtend <DomTypeEditObject.Args> {
                     {
                         style: {
                             [MgrDomDefine.STYLE_MARGIN]: MgrDomDefine.CONFIG_TXT_HALF_SPACING,
-                            [MgrDomDefine.STYLE_COLOR]: MgrDomDefine.STYLE_COLOR_WHITE,
-                            [MgrDomDefine.STYLE_FONT_SIZE]: MgrDomDefine.STYLE_FONT_SIZE_14,
                         }
                     },
 
-                    `描述`
+                    `继承`
+                ),
+                ReactComponentExtend.instantiateTag (
+                    MgrDomDefine.TAG_DIV,
+                    {
+                        style: {
+                            [MgrDomDefine.STYLE_MARGIN]: MgrDomDefine.CONFIG_TXT_HALF_SPACING,
+                            [MgrDomDefine.STYLE_DISPLAY]: MgrDomDefine.STYLE_DISPLAY_FLEX,
+                            [MgrDomDefine.STYLE_FLEX_DIRECTION]: MgrDomDefine.STYLE_FLEX_DIRECTION_ROW,
+
+                            [MgrDomDefine.STYLE_FLEX_GROW]: 1
+                        },
+                    },
+                    ReactComponentExtend.instantiateTag (
+                        NodeModules.antd.Select,
+                        {
+                            [MgrDomDefine.PROPS_SIZE]: MgrDomDefine.PROPS_SIZE_SMALL,
+                            value: struct.dataStruct.extend,
+                            style: {
+                                [MgrDomDefine.STYLE_DISPLAY]: MgrDomDefine.STYLE_DISPLAY_FLEX,
+                                [MgrDomDefine.STYLE_FLEX_DIRECTION]: MgrDomDefine.STYLE_FLEX_DIRECTION_ROW,
+
+                                [MgrDomDefine.STYLE_FLEX_GROW]: 1
+                            },
+                            onChange: (val) => {
+                                data.setParent (val);
+                                MgrDom.inst.callDataChange ();
+                            },
+                        },
+
+                        ...this.listChildrenExtend
+                    ),
+                ),
+            ),
+            
+            ReactComponentExtend.instantiateTag (
+                MgrDomDefine.TAG_DIV,
+                {
+                    style: {
+                        [MgrDomDefine.STYLE_DISPLAY]: MgrDomDefine.STYLE_DISPLAY_FLEX,
+                        [MgrDomDefine.STYLE_ALIGN_ITEMS]: MgrDomDefine.STYLE_ALIGN_ITEMS_CENTER,
+                        [MgrDomDefine.STYLE_FLEX_DIRECTION]: MgrDomDefine.STYLE_FLEX_DIRECTION_ROW,
+                    }
+                },
+
+                ReactComponentExtend.instantiateTag (
+                    MgrDomDefine.TAG_DIV,
+                    {
+                        style: {
+                            [MgrDomDefine.STYLE_MARGIN]: MgrDomDefine.CONFIG_TXT_HALF_SPACING,
+                        }
+                    },
+
+                    `备注`
                 ),
 
                 ReactComponentExtend.instantiateComponent (
@@ -132,7 +221,7 @@ class DomTypeEditObject extends ReactComponentExtend <DomTypeEditObject.Args> {
                 ),
             ),
 
-            ...this.listChildren,
+            ...this.listChildrenProperty,
 
             ReactComponentExtend.instantiateTag (
                 MgrDomDefine.TAG_DIV,
@@ -155,13 +244,7 @@ class DomTypeEditObject extends ReactComponentExtend <DomTypeEditObject.Args> {
                             let idSeed = MgrFile.inst.get (MgrFileItem.ID_SEED);
                             let id = ++idSeed;
                             MgrFile.inst.set (MgrFileItem.ID_SEED, idSeed);
-                            struct.propertyAdd ({
-                                id: id,
-                                demoName: `Property${id}`,
-                                info: `描述`,
-                                isArray: false,
-                                type: StructPropertyTypeBasic.typeNumber.getId ()
-                            });
+                            struct.propertyAdd (MgrFileItem.CustomStructProperty.create (id));
                             MgrDom.inst.callDataChange ();
                         },
                     },

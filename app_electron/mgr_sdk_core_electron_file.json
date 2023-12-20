@@ -1,59 +1,16 @@
 {
- "ID_SEED_3": 8,
- "LIST_CUSTOM_STRUCT_3": [
-  {
-   "id": 1,
-   "demoName": "CustomStruct1",
-   "info": "描述",
-   "listProperty": [
-    {
-     "id": 5,
-     "demoName": "4",
-     "info": "描述",
-     "isArray": false,
-     "type": -1
-    },
-    {
-     "id": 4,
-     "demoName": "3",
-     "info": "描述",
-     "isArray": false,
-     "type": -1
-    },
-    {
-     "id": 2,
-     "demoName": "1",
-     "info": "描述",
-     "isArray": false,
-     "type": -1
-    },
-    {
-     "id": 3,
-     "demoName": "2",
-     "info": "描述",
-     "isArray": false,
-     "type": -1
-    }
-   ]
-  },
-  {
-   "id": 6,
-   "demoName": "CustomStruct6",
-   "info": "描述",
-   "listProperty": []
-  },
-  {
-   "id": 7,
-   "demoName": "CustomStruct7",
-   "info": "描述",
-   "listProperty": []
-  },
-  {
-   "id": 8,
-   "demoName": "CustomStruct8",
-   "info": "描述",
-   "listProperty": []
-  }
- ],
- "LEFT_OP_3": 1
+ "ID_SEED_2": 0,
+ "LIST_CUSTOM_STRUCT_2": [],
+ "LEFT_OP_2": 1,
+ "ROOT_STRUCT_2": {
+  "id": -4,
+  "demoName": "Root",
+  "info": "总览",
+  "extend": null,
+  "listProperty": []
+ },
+ "CONFIG_ROOT_2": {
+  "typeId": -4,
+  "listProperty": []
+ }
 }

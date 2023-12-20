@@ -18,27 +18,27 @@ export default class DragStructMachineStatusTarget extends DragStructMachineStat
     idxHover: number;
 
     onEnter () {
-        for (let i = 0; i < IndexGlobal.inst.structList.length; i++) {
-            let structListI = IndexGlobal.inst.structList [i];
-            if (structListI == this.relMachine.dragTargetStart) {
+        for (let i = 0; i < IndexGlobal.inst.listTypeObjectCustom.length; i++) {
+            let structListI = IndexGlobal.inst.listTypeObjectCustom [i];
+            if (structListI.struct == this.relMachine.dragTargetStart) {
                 this.idxStart = i;
             };
-            if (structListI == this.relMachine.dragTargetHover) {
+            if (structListI.struct == this.relMachine.dragTargetHover) {
                 this.idxHover = i;
             };
         };
         if (this.idxStart < this.idxHover) {
             for (let i = this.idxStart; i < this.idxHover; i++) {
-                let dbListImgI = IndexGlobal.inst.structList [i];
-                let dbListImgINext = IndexGlobal.inst.structList [i + 1];
-                dbListImgI.maskCurrStatus.onMaskEnable (dbListImgINext);
+                let dbListImgI = IndexGlobal.inst.listTypeObjectCustom [i];
+                let dbListImgINext = IndexGlobal.inst.listTypeObjectCustom [i + 1];
+                dbListImgI.struct.maskCurrStatus.onMaskEnable (dbListImgINext.struct);
             }; 
         };
         if (this.idxHover < this.idxStart) {
             for (let i = this.idxStart; this.idxHover < i; i--) {
-                let dbListImgI = IndexGlobal.inst.structList [i];
-                let dbListImgINext = IndexGlobal.inst.structList [i - 1];
-                dbListImgI.maskCurrStatus.onMaskEnable (dbListImgINext);
+                let dbListImgI = IndexGlobal.inst.listTypeObjectCustom [i];
+                let dbListImgINext = IndexGlobal.inst.listTypeObjectCustom [i - 1];
+                dbListImgI.struct.maskCurrStatus.onMaskEnable (dbListImgINext.struct);
             };
         };
         this.relMachine.dragTargetHover.maskCurrStatus.onMaskEnable (this.relMachine.dragTargetStart);
@@ -46,18 +46,18 @@ export default class DragStructMachineStatusTarget extends DragStructMachineStat
     }
 
     onTargetLeave (): void {
-        for (let i = 0; i < IndexGlobal.inst.structList.length; i++) {
-            let dbImg = IndexGlobal.inst.structList [i];
-            dbImg.maskCurrStatus.onMaskDisable ();
+        for (let i = 0; i < IndexGlobal.inst.listTypeObjectCustom.length; i++) {
+            let dbImg = IndexGlobal.inst.listTypeObjectCustom [i];
+            dbImg.struct.maskCurrStatus.onMaskDisable ();
         };
         this.relMachine.enter (this.relMachine.statusHover);
         MgrDom.inst.callDataChange ();
     }
 
     onEnd (): void {
-        for (let i = 0; i < IndexGlobal.inst.structList.length; i++) {
-            let dbImg = IndexGlobal.inst.structList [i];
-            dbImg.maskCurrStatus.onMaskDisable ();
+        for (let i = 0; i < IndexGlobal.inst.listTypeObjectCustom.length; i++) {
+            let dbImg = IndexGlobal.inst.listTypeObjectCustom [i];
+            dbImg.struct.maskCurrStatus.onMaskDisable ();
         };
         IndexGlobal.inst.structMove (this.idxStart, this.idxHover);
         this.relMachine.enter (this.relMachine.statusIdle);

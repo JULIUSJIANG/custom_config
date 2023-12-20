@@ -14,8 +14,8 @@ class DomTypeEditObjectProperty extends ReactComponentExtend {
         let struct = this.props.struct;
         let property = this.props.property;
         this.listChildren.length = 0;
-        for (let i = 0; i < IndexGlobal.inst.listType.length; i++) {
-            let listTypeI = IndexGlobal.inst.listType[i];
+        for (let i = 0; i < IndexGlobal.inst.listTypeSelectAble.length; i++) {
+            let listTypeI = IndexGlobal.inst.listTypeSelectAble[i];
             this.listChildren.push(ReactComponentExtend.instantiateTag(NodeModules.antd.Select.Option, {
                 key: listTypeI.getId(),
                 value: listTypeI.getId(),
@@ -57,7 +57,6 @@ class DomTypeEditObjectProperty extends ReactComponentExtend {
             style: {
                 [MgrDomDefine.STYLE_MARGIN]: MgrDomDefine.CONFIG_TXT_HALF_SPACING,
                 [MgrDomDefine.STYLE_COLOR]: MgrDomDefine.STYLE_COLOR_BLACK,
-                [MgrDomDefine.STYLE_FONT_SIZE]: MgrDomDefine.STYLE_FONT_SIZE_14,
             }
         }, `代号`), ReactComponentExtend.instantiateComponent(DomTextInput, {
             value: customProperty.demoName,
@@ -79,9 +78,8 @@ class DomTypeEditObjectProperty extends ReactComponentExtend {
             style: {
                 [MgrDomDefine.STYLE_MARGIN]: MgrDomDefine.CONFIG_TXT_HALF_SPACING,
                 [MgrDomDefine.STYLE_COLOR]: MgrDomDefine.STYLE_COLOR_BLACK,
-                [MgrDomDefine.STYLE_FONT_SIZE]: MgrDomDefine.STYLE_FONT_SIZE_14,
             }
-        }, `描述`), ReactComponentExtend.instantiateComponent(DomTextInput, {
+        }, `备注`), ReactComponentExtend.instantiateComponent(DomTextInput, {
             value: customProperty.info,
             onChange: (val) => {
                 customProperty.info = val;
@@ -101,7 +99,6 @@ class DomTypeEditObjectProperty extends ReactComponentExtend {
             style: {
                 [MgrDomDefine.STYLE_MARGIN]: MgrDomDefine.CONFIG_TXT_HALF_SPACING,
                 [MgrDomDefine.STYLE_COLOR]: MgrDomDefine.STYLE_COLOR_BLACK,
-                [MgrDomDefine.STYLE_FONT_SIZE]: MgrDomDefine.STYLE_FONT_SIZE_14,
             }
         }, `类型`), ReactComponentExtend.instantiateTag(MgrDomDefine.TAG_DIV, {
             style: {

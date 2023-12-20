@@ -2,7 +2,8 @@ import MgrFile from "../mgr/MgrFile.js";
 import MgrFileItem from "../mgr/MgrFileItem.js";
 import LeftOpMachineStatus from "./LeftOpMachineStatus.js";
 import LeftOPMachineStatusEdit from "./LeftOpMachineStatusEdit.js";
-import LeftOPMachineStatusMove from "./LeftOpMachineStatusMove.js";
+import LeftOpMachineStatusMoveProperty from "./LeftOpMachineStatusMoveProperty.js";
+import LeftOpMachineStatusMoveStruct from "./LeftOpMachineStatusMoveStruct.js";
 import LeftOPMachineStatusRead from "./LeftOpMachineStatusRead.js";
 
 /**
@@ -21,11 +22,13 @@ export default class LeftOpMachine {
     mapStatus = new Map <number, LeftOpMachineStatus> ();
 
     constructor () {
-        this.statusRead = new LeftOPMachineStatusRead (this, 1, `迁移属性`);
-        this.statusMove = new LeftOPMachineStatusMove (this, 2, `迁移类型`);
-        this.statusEdit = new LeftOPMachineStatusEdit (this, 3, `编辑`);
+        this.statusRead = new LeftOPMachineStatusRead (this, 1, `总览`);
+        this.statusEdit = new LeftOPMachineStatusEdit (this, 2, `编辑`);
+        this.statusMoveProperty = new LeftOpMachineStatusMoveProperty (this, 3, `迁移属性`);
+        this.statusMoveStruct = new LeftOpMachineStatusMoveStruct (this, 4, `迁移类型`);
+        
 
-        this.listStatus.push (this.statusRead, this.statusMove, this.statusEdit);
+        this.listStatus.push (this.statusRead, this.statusEdit, this.statusMoveProperty, this.statusMoveStruct);
         for (let i = 0; i < this.listStatus.length; i++) {
             let listStatusI = this.listStatus [i];
             this.mapStatus.set (listStatusI.id, listStatusI);
@@ -34,9 +37,11 @@ export default class LeftOpMachine {
 
     statusRead: LeftOPMachineStatusRead;
 
-    statusMove: LeftOPMachineStatusMove;
-
     statusEdit: LeftOPMachineStatusEdit;
+
+    statusMoveProperty: LeftOpMachineStatusMoveProperty;
+
+    statusMoveStruct: LeftOpMachineStatusMoveStruct;
 
     /**
      * 当前状态
